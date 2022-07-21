@@ -56,6 +56,12 @@ const askAppFolder = appId =>
     appFolder => validateAppFolder(appFolder),
   ])
 
+const askTypeScript = () =>
+  ask('Do you want to use TypeScript?', null, 'list', ['Yes', 'No']).then(
+    // map yes to true and no to false
+    val => val === 'Yes'
+  )
+
 const askESlint = () =>
   ask('Do you want to enable ESlint?', null, 'list', ['Yes', 'No']).then(
     // map yes to true and no to false
@@ -80,6 +86,7 @@ const askConfig = async () => {
     () => askAppName().then(appName => (config.appName = appName)),
     () => askAppId(config.appName).then(appId => (config.appId = appId)),
     () => askAppFolder(config.appId).then(folder => (config.appFolder = folder)),
+    () => askTypeScript().then(useTypeScript => (config.useTypeScript = useTypeScript)),
     () => askESlint().then(eslint => (config.eslint = eslint)),
     () => config,
   ])
@@ -126,7 +133,8 @@ const copyLightningFixtures = config => {
     if (config.appFolder && fs.pathExistsSync(targetDir)) {
       exit('The target directory ' + targetDir + ' already exists')
     }
-    fs.copySync(path.join(__dirname, '../../fixtures/lightning-app'), targetDir)
+    const fixtureDir = config.useTypeScript ? 'lightning-app-ts' : 'lightning-app'
+    fs.copySync(path.join(__dirname, `../../fixtures/${fixtureDir}`), targetDir)
     resolve(targetDir)
   })
 }
