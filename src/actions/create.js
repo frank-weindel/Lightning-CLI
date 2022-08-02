@@ -86,7 +86,15 @@ const askConfig = async () => {
     () => askAppName().then(appName => (config.appName = appName)),
     () => askAppId(config.appName).then(appId => (config.appId = appId)),
     () => askAppFolder(config.appId).then(folder => (config.appFolder = folder)),
-    () => askTypeScript().then(useTypeScript => (config.useTypeScript = useTypeScript)),
+    () =>
+      askTypeScript().then(
+        useTypeScript =>
+          (config.fixturesBase = path.join(
+            __dirname,
+            '../../fixtures',
+            useTypeScript ? 'ts' : 'js'
+          ))
+      ),
     () => askESlint().then(eslint => (config.eslint = eslint)),
     () => config,
   ])
@@ -133,8 +141,8 @@ const copyLightningFixtures = config => {
     if (config.appFolder && fs.pathExistsSync(targetDir)) {
       exit('The target directory ' + targetDir + ' already exists')
     }
-    const fixtureDir = config.useTypeScript ? 'lightning-app-ts' : 'lightning-app'
-    fs.copySync(path.join(__dirname, `../../fixtures/${fixtureDir}`), targetDir)
+    fs.copySync(path.join(config.fixturesBase, 'lightning-app'), targetDir)
+    fs.copySync(path.join(config.fixturesBase, '../common/lightning-app'), path.join(targetDir))
     resolve(targetDir)
   })
 }
@@ -173,26 +181,26 @@ const setSdkVersion = config => {
 
 const addESlint = config => {
   fs.copyFileSync(
-    path.join(__dirname, '../../fixtures/eslint/.editorconfig'),
+    path.join(config.fixturesBase, 'eslint/.editorconfig'),
     path.join(config.targetDir, '.editorconfig')
   )
   fs.copyFileSync(
-    path.join(__dirname, '../../fixtures/eslint/.eslintignore'),
+    path.join(config.fixturesBase, 'eslint/.eslintignore'),
     path.join(config.targetDir, '.eslintignore')
   )
   fs.copyFileSync(
-    path.join(__dirname, '../../fixtures/eslint/.eslintrc.js'),
+    path.join(config.fixturesBase, 'eslint/.eslintrc.js'),
     path.join(config.targetDir, '.eslintrc.js')
   )
 
-  fs.copySync(path.join(__dirname, '../../fixtures/ide'), path.join(config.targetDir))
+  fs.copySync(path.join(config.fixturesBase, 'ide'), path.join(config.targetDir))
 
   fs.writeFileSync(
     path.join(config.targetDir, 'package.json'),
     JSON.stringify(
       {
         ...JSON.parse(fs.readFileSync(path.join(config.targetDir, 'package.json'))),
-        ...JSON.parse(fs.readFileSync(path.join(__dirname, '../../fixtures/eslint/package.json'))),
+        ...JSON.parse(fs.readFileSync(path.join(config.fixturesBase, 'eslint/package.json'))),
       },
       null,
       2
@@ -227,16 +235,13 @@ const npmInstall = cwd => {
     .catch(e => spinner.fail(`Error occurred while installing npm dependencies\n\n${e}`))
 }
 
-const gitInit = cwd => {
+const gitInit = (cwd, fixturesBase) => {
   spinner.start('Initializing empty GIT repository')
   let msg
   return execa('git', ['init'], { cwd })
     .then(({ stdout }) => (msg = stdout))
     .then(() => {
-      return fs.copyFileSync(
-        path.join(__dirname, '../../fixtures/git/gitignore'),
-        path.join(cwd, '.gitignore')
-      )
+      return fs.copyFileSync(path.join(fixturesBase, 'git/gitignore'), path.join(cwd, '.gitignore'))
     })
     .then(() => spinner.succeed(msg))
     .catch(e => spinner.fail(`Error occurred while creating git repository\n\n${e}`))
@@ -245,7 +250,7 @@ const gitInit = cwd => {
 const install = config => {
   return sequence([
     () => config.npmInstall && npmInstall(config.targetDir),
-    () => config.gitInit && gitInit(config.targetDir),
+    () => config.gitInit && gitInit(config.targetDir, config.fixturesBase),
     () => config,
   ])
 }

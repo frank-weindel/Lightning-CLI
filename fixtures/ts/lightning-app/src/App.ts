@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Lightning, Utils } from '@lightningjs/sdk';
+import { Lightning, Utils } from '@lightningjs/sdk'
 
 interface AppTemplateSpec extends Lightning.Component.TemplateSpecStrong {
   Background: {
     Logo: {},
+    Mystery: {},
     Text: {},
   }
 }
@@ -32,8 +33,9 @@ export class App
   readonly Background = this.getByRef('Background')!;
   readonly Logo = this.Background.getByRef('Logo')!;
   readonly Text = this.Background.getByRef('Text')!;
+  readonly Mystery = this.Background.getByRef('Mystery')!;
 
-  static _template(): Lightning.Component.Template<AppTemplateSpec> {
+  static override _template(): Lightning.Component.Template<AppTemplateSpec> {
     return {
       w: 1920,
       h: 1080,
@@ -47,8 +49,15 @@ export class App
           mountY: 1,
           x: 960,
           y: 600,
-          colorizeResultTexture: true,
           src: Utils.asset('images/logo.png'),
+        },
+        Mystery: {
+          x: 930,
+          y: 400,
+          w: 150,
+          h: 150,
+          scale: 0,
+          src: Utils.asset('images/mystery.png'),
         },
         Text: {
           mount: 0.5,
@@ -70,15 +79,25 @@ export class App
   }
 
   override _handleEnter() {
-    this.Logo.setSmooth('scale', 1.5, {
-      duration: 3
+    this.Logo.setSmooth('scale', 2, {
+      duration: 2.5
     });
-    this.Text.setSmooth('y', 750, {
-      duration: 3
+    this.Text.setSmooth('y', 800, {
+      duration: 2.5
     });
+    this.Text.setSmooth('alpha', 0, {
+      duration: 2.5,
+      timingFunction: 'ease-out'
+    });
+    this.Mystery.smooth = {
+      x: 1025,
+      y: 550,
+      scale: 1
+    };
   }
 
-  _init() {
+  override _init() {
+    this.stage.transitions.defaultTransitionSettings.duration = 3;
     this.Background
       .animation({
         duration: 15,
