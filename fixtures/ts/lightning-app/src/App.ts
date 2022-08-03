@@ -18,7 +18,7 @@
  */
 import { Lightning, Utils } from '@lightningjs/sdk'
 
-interface AppTemplateSpec extends Lightning.Component.TemplateSpecStrong {
+interface AppTemplateSpec extends Lightning.Component.TemplateSpec {
   Background: {
     Logo: object
     Mystery: object
