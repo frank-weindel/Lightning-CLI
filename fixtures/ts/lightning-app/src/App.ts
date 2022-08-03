@@ -20,20 +20,20 @@ import { Lightning, Utils } from '@lightningjs/sdk'
 
 interface AppTemplateSpec extends Lightning.Component.TemplateSpecStrong {
   Background: {
-    Logo: {},
-    Mystery: {},
-    Text: {},
+    Logo: object
+    Mystery: object
+    Text: object
   }
 }
 
 export class App
   extends Lightning.Component<AppTemplateSpec>
-  implements Lightning.Component.ImplementTemplateSpec<AppTemplateSpec> {
-
-  readonly Background = this.getByRef('Background')!;
-  readonly Logo = this.Background.getByRef('Logo')!;
-  readonly Text = this.Background.getByRef('Text')!;
-  readonly Mystery = this.Background.getByRef('Mystery')!;
+  implements Lightning.Component.ImplementTemplateSpec<AppTemplateSpec>
+{
+  readonly Background = this.getByRef('Background')!
+  readonly Logo = this.Background.getByRef('Logo')!
+  readonly Text = this.Background.getByRef('Text')!
+  readonly Mystery = this.Background.getByRef('Mystery')!
 
   static override _template(): Lightning.Component.Template<AppTemplateSpec> {
     return {
@@ -75,41 +75,48 @@ export class App
   }
 
   static getFonts() {
-    return [{ family: 'Regular', url: Utils.asset('fonts/Roboto-Regular.ttf') as string }]
+    return [
+      {
+        family: 'Regular',
+        url: Utils.asset('fonts/Roboto-Regular.ttf') as string,
+      },
+    ]
   }
 
   override _handleEnter() {
     this.Logo.setSmooth('scale', 2, {
-      duration: 2.5
-    });
+      duration: 2.5,
+    })
     this.Text.setSmooth('y', 800, {
-      duration: 2.5
-    });
+      duration: 2.5,
+    })
     this.Text.setSmooth('alpha', 0, {
       duration: 2.5,
-      timingFunction: 'ease-out'
-    });
+      timingFunction: 'ease-out',
+    })
     this.Mystery.smooth = {
       x: 1025,
       y: 550,
-      scale: 1
-    };
+      scale: 1,
+    }
   }
 
   override _init() {
-    this.stage.transitions.defaultTransitionSettings.duration = 3;
-    this.Background
-      .animation({
-        duration: 15,
-        repeat: -1,
-        delay: 1,
-        actions: [
-          {
-            p: 'color',
-            v: { 0: { v: 0xfffbb03b }, 0.5: { v: 0xfff46730 }, 0.8: { v: 0xfffbb03b } },
+    this.stage.transitions.defaultTransitionSettings.duration = 3
+    this.Background.animation({
+      duration: 15,
+      repeat: -1,
+      delay: 1,
+      actions: [
+        {
+          p: 'color',
+          v: {
+            0: { v: 0xfffbb03b },
+            0.5: { v: 0xfff46730 },
+            0.8: { v: 0xfffbb03b },
           },
-        ],
-      })
-      .start();
+        },
+      ],
+    }).start()
   }
 }

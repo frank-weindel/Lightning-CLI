@@ -181,26 +181,34 @@ const setSdkVersion = config => {
 
 const addESlint = config => {
   fs.copyFileSync(
-    path.join(config.fixturesBase, 'eslint/.editorconfig'),
+    path.join(config.fixturesBase, 'eslint/editorconfig'),
     path.join(config.targetDir, '.editorconfig')
   )
   fs.copyFileSync(
-    path.join(config.fixturesBase, 'eslint/.eslintignore'),
+    path.join(config.fixturesBase, 'eslint/eslintignore'),
     path.join(config.targetDir, '.eslintignore')
   )
   fs.copyFileSync(
-    path.join(config.fixturesBase, 'eslint/.eslintrc.js'),
+    path.join(config.fixturesBase, 'eslint/eslintrc.js'),
     path.join(config.targetDir, '.eslintrc.js')
   )
 
   fs.copySync(path.join(config.fixturesBase, 'ide'), path.join(config.targetDir))
 
+  const origPackageJson = JSON.parse(fs.readFileSync(path.join(config.targetDir, 'package.json')))
+  const eslintPackageJson = JSON.parse(
+    fs.readFileSync(path.join(config.fixturesBase, 'eslint/package.json'))
+  )
   fs.writeFileSync(
     path.join(config.targetDir, 'package.json'),
     JSON.stringify(
       {
-        ...JSON.parse(fs.readFileSync(path.join(config.targetDir, 'package.json'))),
-        ...JSON.parse(fs.readFileSync(path.join(config.fixturesBase, 'eslint/package.json'))),
+        ...origPackageJson,
+        ...eslintPackageJson,
+        devDependencies: {
+          ...(origPackageJson.devDependencies || {}),
+          ...(eslintPackageJson.devDependencies || {}),
+        },
       },
       null,
       2

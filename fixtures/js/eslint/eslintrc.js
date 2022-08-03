@@ -21,7 +21,7 @@ module.exports = {
     'prettier/prettier': [
       'error',
       {
-        trailingComma: true,
+        trailingComma: 'all',
         singleQuote: true,
         tabWidth: 2,
         semi: false,
