@@ -14,6 +14,36 @@ declare module '@lightningjs/sdk' {
   namespace Lightning {
     namespace Component {
       /**
+       * These handlers augmented here will be _added_ to the existing default key handlers
+       * Be sure to name and type them appropriately. There should be 4 forms of each:
+       * - `_capture{KeyName}`
+       * - `_capture{KeyName}Release`
+       * - `_handle{KeyName}`
+       * - `_handle{KeyName}Release`
+       */
+      interface DefaultKeyHandlers {
+        // Examples:
+        // _captureHome?(e: KeyboardEvent): boolean | void;
+        // _captureHomeRelease?(e: KeyboardEvent): boolean | void;
+        // _handleHome?(e: KeyboardEvent): boolean | void;
+        // _handleHomeRelease?(e: KeyboardEvent): boolean | void;
+      }
+
+      /**
+       * If any handlers are augmented here, the will _replace_ the default key handlers
+       * declared in {@link DefaultKeyHandlers}.
+       *
+       * Use this if you have a radically different set of keys you'd like to orient your app around.
+       */
+      interface CustomKeyHandlers {
+        // Examples:
+        // _captureHome?(e: KeyboardEvent): boolean | void;
+        // _captureHomeRelease?(e: KeyboardEvent): boolean | void;
+        // _handleHome?(e: KeyboardEvent): boolean | void;
+        // _handleHomeRelease?(e: KeyboardEvent): boolean | void;
+      }
+
+      /**
        * Fire Ancestor Definitions
        */
       interface FireAncestorsMap {
@@ -65,36 +95,6 @@ declare module '@lightningjs/sdk' {
       // Menu: typeof Menu;
       // Overlay: typeof OverlayComponent;
     }
-  }
-
-  /**
-   * These handlers augmented here will be _added_ to the existing default key handlers
-   * Be sure to name and type them appropriately. There should be 4 forms of each:
-   * - `_capture{KeyName}`
-   * - `_capture{KeyName}Release`
-   * - `_handle{KeyName}`
-   * - `_handle{KeyName}Release`
-   */
-  interface DefaultKeyHandlers {
-    // Examples:
-    // _captureHome?(e: KeyboardEvent): boolean | void;
-    // _captureHomeRelease?(e: KeyboardEvent): boolean | void;
-    // _handleHome?(e: KeyboardEvent): boolean | void;
-    // _handleHomeRelease?(e: KeyboardEvent): boolean | void;
-  }
-
-  /**
-   * If any handlers are augmented here, the will _replace_ the default key handlers
-   * declared in {@link DefaultKeyHandlers}.
-   *
-   * Use this if you have a radically different set of keys you'd like to orient your app around.
-   */
-  interface CustomKeyHandlers {
-    // Examples:
-    // _captureHome?(e: KeyboardEvent): boolean | void;
-    // _captureHomeRelease?(e: KeyboardEvent): boolean | void;
-    // _handleHome?(e: KeyboardEvent): boolean | void;
-    // _handleHomeRelease?(e: KeyboardEvent): boolean | void;
   }
 
   /**
