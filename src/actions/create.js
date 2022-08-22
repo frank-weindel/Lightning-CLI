@@ -57,7 +57,7 @@ const askAppFolder = appId =>
   ])
 
 const askTypeScript = () =>
-  ask('Do you want to use TypeScript?', null, 'list', ['Yes', 'No']).then(
+  ask('Do you want to use TypeScript?', null, 'list', ['No', 'Yes']).then(
     // map yes to true and no to false
     val => val === 'Yes'
   )
