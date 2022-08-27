@@ -1,0 +1,15 @@
+8,9c8,16
+<   plugins: ['prettier'],
+<   extends: ['eslint:recommended', 'plugin:prettier/recommended', 'prettier'],
+---
+>   parser: '@typescript-eslint/parser',
+>   plugins: ['@typescript-eslint', 'prettier'],
+>   extends: [
+>     'eslint:recommended',
+>     'plugin:@typescript-eslint/eslint-recommended',
+>     'plugin:@typescript-eslint/recommended',
+>     'plugin:prettier/recommended',
+>     'prettier',
+>   ],
+20a28
+>     '@typescript-eslint/no-non-null-assertion': 'off',

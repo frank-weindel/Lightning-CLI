@@ -181,17 +181,24 @@ const setSdkVersion = config => {
 
 const addESlint = config => {
   fs.copyFileSync(
-    path.join(config.fixturesBase, 'eslint/editorconfig'),
+    path.join(config.fixturesBase, '../common/eslint/editorconfig'),
     path.join(config.targetDir, '.editorconfig')
   )
   fs.copyFileSync(
-    path.join(config.fixturesBase, 'eslint/eslintignore'),
+    path.join(config.fixturesBase, '../common/eslint/eslintignore'),
     path.join(config.targetDir, '.eslintignore')
   )
+  const targetEslintrcPath = path.join(config.targetDir, '.eslintrc.js')
   fs.copyFileSync(
-    path.join(config.fixturesBase, 'eslint/eslintrc.js'),
-    path.join(config.targetDir, '.eslintrc.js')
+    path.join(config.fixturesBase, '../common/eslint/eslintrc.js'),
+    targetEslintrcPath
   )
+
+  // If a patch exists for eslintrc (as is the case for the TS fixture), patch it on the target file.
+  const eslintrcPatchPath = path.join(config.fixturesBase, 'eslint/eslintrc.js.patch')
+  if (fs.pathExistsSync(eslintrcPatchPath)) {
+    execa('patch', [targetEslintrcPath, eslintrcPatchPath])
+  }
 
   fs.copySync(path.join(config.fixturesBase, 'ide'), path.join(config.targetDir))
 
